@@ -472,10 +472,10 @@ export function ConstellationCanvas() {
         position: [0, 0, 5],
       }}
       style={{
-        height: H,
         position: "absolute",
         inset: 0,
-        width: W,
+        width: "100%",
+        height: "100%",
       }}
     >
       <color attach="background" args={["#0C0C0B"]} />

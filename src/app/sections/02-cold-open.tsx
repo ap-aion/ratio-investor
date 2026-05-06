@@ -46,10 +46,10 @@ export function ColdOpen() {
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: 56,
-        paddingTop: 80,
-        paddingInline: 56,
-        paddingBottom: 96,
+        gap: "var(--section-gap)",
+        paddingTop: "var(--section-pad-y)",
+        paddingInline: "var(--pad-x)",
+        paddingBottom: "var(--section-pad-y)",
       }}
     >
       {/* label strip */}
@@ -57,6 +57,8 @@ export function ColdOpen() {
         style={{
           alignItems: "center",
           display: "flex",
+          flexWrap: "wrap",
+          gap: 16,
           justifyContent: "space-between",
         }}
       >
@@ -85,10 +87,10 @@ export function ColdOpen() {
           style={{
             color: "var(--ink)",
             fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-            fontSize: 88,
+            fontSize: "var(--hero-fz)",
             fontWeight: 500,
             letterSpacing: "-0.04em",
-            lineHeight: "92px",
+            lineHeight: "var(--hero-lh)",
             margin: 0,
             maxWidth: 1100,
           }}
@@ -133,11 +135,13 @@ export function ColdOpen() {
       <RevealStagger
         delay={0.1}
         each={0.12}
+        className="wrap-md"
         style={{
           alignItems: "flex-start",
           borderTop: "1px solid var(--rule)",
           display: "flex",
-          gap: 56,
+          flexWrap: "wrap",
+          gap: "clamp(24px, 3vw, 56px)",
           paddingTop: 16,
         }}
       >
@@ -313,7 +317,7 @@ export function ColdOpen() {
           <span style={muted}>1D string → 3D structure</span>
         </div>
 
-        <div style={{ border: "1px solid var(--rule)", display: "flex" }}>
+        <div className="stack-md with-rules" style={{ border: "1px solid var(--rule)", display: "flex" }}>
           {/* tokens panel */}
           <div
             style={{
@@ -367,7 +371,7 @@ export function ColdOpen() {
               style={{
                 alignItems: "center",
                 display: "flex",
-                flexWrap: "nowrap",
+                flexWrap: "wrap",
                 gap: 4,
               }}
             >
@@ -433,7 +437,7 @@ export function ColdOpen() {
               gap: 14,
               justifyContent: "center",
               padding: 28,
-              width: 220,
+              width: "min(220px, 100%)",
             }}
           >
             <span

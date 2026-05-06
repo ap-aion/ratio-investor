@@ -29,8 +29,8 @@ export function Masthead() {
         style={{
           display: "flex",
           flexDirection: "column",
-          paddingTop: 32,
-          paddingInline: 56,
+          paddingTop: 24,
+          paddingInline: "var(--pad-x)",
           position: "sticky",
           top: 0,
           zIndex: 50,
@@ -80,6 +80,7 @@ export function Masthead() {
               </motion.a>
             </Magnetic>
             <span
+              className="hide-sm"
               style={{
                 background: "var(--rule)",
                 flexShrink: 0,
@@ -88,6 +89,7 @@ export function Masthead() {
               }}
             />
             <span
+              className="hide-sm"
               style={{
                 ...mono,
                 color: "var(--ink-5)",
@@ -101,47 +103,52 @@ export function Masthead() {
             </span>
           </div>
 
-          <nav style={{ alignItems: "center", display: "flex", gap: 28 }}>
-            {NAV_ITEMS.map((item) => {
-              const isActive = active === item.id;
-              return (
-                <Magnetic key={item.id} strength={0.4} radius={70}>
-                  <motion.a
-                    href={`#${item.id}`}
-                    whileHover={{ color: "var(--ink)" }}
-                    transition={{ duration: 0.2 }}
-                    data-cursor="hover"
-                    style={{
-                      ...mono,
-                      color: isActive ? "var(--ink)" : "var(--ink-5)",
-                      fontSize: 10,
-                      fontWeight: 500,
-                      letterSpacing: "0.08em",
-                      lineHeight: "12px",
-                      position: "relative",
-                      textDecoration: "none",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    {item.label}
-                    {isActive && (
-                      <motion.span
-                        layoutId="nav-active-underline"
-                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        style={{
-                          background: "var(--accent-2)",
-                          bottom: -6,
-                          height: 1,
-                          left: 0,
-                          position: "absolute",
-                          right: 0,
-                        }}
-                      />
-                    )}
-                  </motion.a>
-                </Magnetic>
-              );
-            })}
+          <nav
+            className="masthead-nav"
+            style={{ alignItems: "center", display: "flex", gap: 28 }}
+          >
+            <span className="hide-md" style={{ alignItems: "center", display: "flex", gap: 28 }}>
+              {NAV_ITEMS.map((item) => {
+                const isActive = active === item.id;
+                return (
+                  <Magnetic key={item.id} strength={0.4} radius={70}>
+                    <motion.a
+                      href={`#${item.id}`}
+                      whileHover={{ color: "var(--ink)" }}
+                      transition={{ duration: 0.2 }}
+                      data-cursor="hover"
+                      style={{
+                        ...mono,
+                        color: isActive ? "var(--ink)" : "var(--ink-5)",
+                        fontSize: 10,
+                        fontWeight: 500,
+                        letterSpacing: "0.08em",
+                        lineHeight: "12px",
+                        position: "relative",
+                        textDecoration: "none",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {item.label}
+                      {isActive && (
+                        <motion.span
+                          layoutId="nav-active-underline"
+                          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                          style={{
+                            background: "var(--accent-2)",
+                            bottom: -6,
+                            height: 1,
+                            left: 0,
+                            position: "absolute",
+                            right: 0,
+                          }}
+                        />
+                      )}
+                    </motion.a>
+                  </Magnetic>
+                );
+              })}
+            </span>
 
             <div
               style={{

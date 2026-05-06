@@ -40,11 +40,9 @@ function AffiliationGraph() {
   return (
     <svg
       ref={ref}
-      width="460"
-      height="460"
       viewBox="0 0 460 460"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ position: "absolute", top: 0, left: 0 }}
+      style={{ position: "absolute", inset: 0, height: "100%", width: "100%" }}
       aria-hidden
     >
       {/* outer ring connections */}
@@ -219,15 +217,16 @@ export function Moat() {
         display: "flex",
         flexDirection: "column",
         gap: 40,
-        paddingBlock: 80,
-        paddingInline: 56,
+        paddingBlock: "var(--section-pad-y)",
+        paddingInline: "var(--pad-x)",
       }}
     >
       <Reveal
         style={{
           alignItems: "flex-end",
           display: "flex",
-          gap: 56,
+          flexWrap: "wrap",
+          gap: 28,
           justifyContent: "space-between",
         }}
       >
@@ -256,10 +255,10 @@ export function Moat() {
             style={{
               color: "var(--ink)",
               fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-              fontSize: 44,
+              fontSize: "var(--display-fz)",
               fontWeight: 500,
               letterSpacing: "-0.03em",
-              lineHeight: "48px",
+              lineHeight: "var(--display-lh)",
               margin: 0,
             }}
           >
@@ -281,6 +280,7 @@ export function Moat() {
       </Reveal>
 
       <div
+        className="stack-md with-rules"
         style={{
           borderTop: "1px solid var(--rule)",
           borderBottom: "1px solid var(--rule)",
@@ -436,6 +436,7 @@ export function Moat() {
 
           {/* stats row */}
           <div
+            className="stack-sm with-rules"
             style={{
               borderTop: "1px solid var(--rule)",
               borderBottom: "1px solid var(--rule)",
@@ -564,10 +565,11 @@ export function Moat() {
           </span>
           <div
             style={{
+              aspectRatio: "1 / 1",
               flexShrink: 0,
-              height: 460,
+              maxWidth: 460,
               position: "relative",
-              width: 460,
+              width: "100%",
             }}
           >
             <AffiliationGraph />

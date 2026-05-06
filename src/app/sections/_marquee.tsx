@@ -56,7 +56,7 @@ export function KeywordMarquee() {
         borderBottom: "1px solid var(--rule)",
         overflow: "hidden",
         position: "relative",
-        width: 1440,
+        width: "100%",
       }}
     >
       <div

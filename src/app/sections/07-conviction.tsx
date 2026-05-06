@@ -239,6 +239,8 @@ function StackRow({
         borderLeft: layer.emphasized ? "2px solid var(--accent)" : undefined,
         borderBottom: withBottomBorder ? "1px solid var(--rule)" : undefined,
         display: "flex",
+        flexWrap: "wrap",
+        gap: 24,
         paddingBlock: 24,
         paddingInline: 20,
       }}
@@ -246,10 +248,9 @@ function StackRow({
       <div
         style={{
           display: "flex",
+          flex: "0 1 240px",
           flexDirection: "column",
-          flexShrink: 0,
           gap: 6,
-          width: 280,
         }}
       >
         <span style={tagStyle}>{layer.tag}</span>
@@ -280,6 +281,7 @@ function StackRow({
       </div>
 
       <span
+        className="hide-md"
         style={{
           background: "var(--rule)",
           flexShrink: 0,
@@ -291,8 +293,7 @@ function StackRow({
       <ul
         style={{
           display: "flex",
-          flex: "1 1 0",
-          flexBasis: 0,
+          flex: "1 1 280px",
           flexDirection: "column",
           gap: 10,
           listStyle: "none",
@@ -329,10 +330,9 @@ function StackRow({
       <div
         style={{
           alignItems: "flex-end",
-          borderLeft: "1px solid var(--rule)",
           display: "flex",
+          flex: "0 0 auto",
           flexDirection: "column",
-          flexShrink: 0,
           gap: 8,
           paddingLeft: 24,
           width: 160,
@@ -365,9 +365,9 @@ export function Conviction() {
         borderTop: "1px solid var(--rule)",
         display: "flex",
         flexDirection: "column",
-        gap: 56,
-        paddingBlock: 80,
-        paddingInline: 56,
+        gap: "var(--section-gap)",
+        paddingBlock: "var(--section-pad-y)",
+        paddingInline: "var(--pad-x)",
       }}
     >
       <Reveal style={{ display: "flex", flexDirection: "column", gap: 32 }}>
@@ -410,19 +410,19 @@ export function Conviction() {
           style={{
             alignItems: "flex-start",
             display: "flex",
-            gap: 56,
+            flexWrap: "wrap",
+            gap: 28,
           }}
         >
           <h2
             style={{
               color: "var(--ink)",
-              flex: "1.6 1 0",
-              flexBasis: 0,
+              flex: "1.6 1 280px",
               fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-              fontSize: 56,
+              fontSize: "var(--section-fz)",
               fontWeight: 500,
               letterSpacing: "-0.035em",
-              lineHeight: "60px",
+              lineHeight: "var(--section-lh)",
               margin: 0,
             }}
           >
@@ -431,8 +431,7 @@ export function Conviction() {
           <div
             style={{
               display: "flex",
-              flex: "1 1 0",
-              flexBasis: 0,
+              flex: "1 1 260px",
               flexDirection: "column",
               gap: 14,
               paddingTop: 12,

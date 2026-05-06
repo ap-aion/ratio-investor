@@ -436,8 +436,8 @@ export function Speedup() {
         display: "flex",
         flexDirection: "column",
         gap: 48,
-        paddingBlock: 80,
-        paddingInline: 56,
+        paddingBlock: "var(--section-pad-y)",
+        paddingInline: "var(--pad-x)",
         position: "relative",
       }}
     >
@@ -445,7 +445,8 @@ export function Speedup() {
         style={{
           alignItems: "flex-end",
           display: "flex",
-          gap: 56,
+          flexWrap: "wrap",
+          gap: 28,
           justifyContent: "space-between",
         }}
       >
@@ -474,10 +475,10 @@ export function Speedup() {
             style={{
               color: "var(--ink)",
               fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-              fontSize: 44,
+              fontSize: "var(--display-fz)",
               fontWeight: 500,
               letterSpacing: "-0.03em",
-              lineHeight: "48px",
+              lineHeight: "var(--display-lh)",
               margin: 0,
               skewX: skew,
               transformOrigin: "0 50%",
@@ -591,6 +592,7 @@ export function Speedup() {
 
         {/* CFD visual */}
         <div
+          className="chart-scroll"
           style={{
             borderBottom: "1px solid var(--rule)",
             display: "flex",
@@ -701,7 +703,7 @@ export function Speedup() {
                   flexDirection: "column",
                   flexShrink: 0,
                   gap: 2,
-                  width: 240,
+                  width: "min(240px, 50%)",
                 }}
               >
                 <span
@@ -770,6 +772,7 @@ export function Speedup() {
 
         {/* big metrics */}
         <div
+          className="stack-md with-rules"
           style={{
             background: "var(--bg-elev)",
             borderTop: "1px solid var(--rule)",
@@ -902,7 +905,8 @@ export function Speedup() {
               borderBottom: p.highlight ? "1px solid var(--rule)" : undefined,
               cursor: "pointer",
               display: "flex",
-              gap: 32,
+              flexWrap: "wrap",
+              gap: 24,
               paddingBlock: 22,
               paddingInline: 4,
             }}
@@ -923,8 +927,7 @@ export function Speedup() {
             <div
               style={{
                 display: "flex",
-                flex: "2 1 0",
-                flexBasis: 0,
+                flex: "2 1 280px",
                 flexDirection: "column",
                 gap: 6,
               }}
@@ -964,13 +967,14 @@ export function Speedup() {
               </span>
             </div>
             <div
+              className="paper-badge"
               style={{
                 alignItems: "flex-end",
                 display: "flex",
+                flex: "0 0 auto",
                 flexDirection: "column",
-                flexShrink: 0,
                 gap: 4,
-                width: 200,
+                width: "min(200px, 100%)",
               }}
             >
               <span

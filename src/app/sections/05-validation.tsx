@@ -238,15 +238,16 @@ export function Validation() {
         display: "flex",
         flexDirection: "column",
         gap: 40,
-        paddingBlock: 80,
-        paddingInline: 56,
+        paddingBlock: "var(--section-pad-y)",
+        paddingInline: "var(--pad-x)",
       }}
     >
       <Reveal
         style={{
           alignItems: "flex-end",
           display: "flex",
-          gap: 56,
+          flexWrap: "wrap",
+          gap: 28,
           justifyContent: "space-between",
         }}
       >
@@ -275,10 +276,10 @@ export function Validation() {
             style={{
               color: "var(--ink)",
               fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-              fontSize: 44,
+              fontSize: "var(--display-fz)",
               fontWeight: 500,
               letterSpacing: "-0.03em",
-              lineHeight: "48px",
+              lineHeight: "var(--display-lh)",
               margin: 0,
             }}
           >
@@ -304,6 +305,7 @@ export function Validation() {
       <RevealStagger
         amount={0.15}
         each={0.16}
+        className="stack-md with-rules"
         style={{
           borderTop: "1px solid var(--rule)",
           borderBottom: "1px solid var(--rule)",

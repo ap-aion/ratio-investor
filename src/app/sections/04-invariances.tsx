@@ -174,8 +174,8 @@ export function Invariances() {
         display: "flex",
         flexDirection: "column",
         gap: 32,
-        paddingBlock: 80,
-        paddingInline: 56,
+        paddingBlock: "var(--section-pad-y)",
+        paddingInline: "var(--pad-x)",
       }}
     >
       {/* heading + subhead */}
@@ -183,7 +183,8 @@ export function Invariances() {
         style={{
           alignItems: "flex-end",
           display: "flex",
-          gap: 56,
+          flexWrap: "wrap",
+          gap: 28,
           justifyContent: "space-between",
         }}
       >
@@ -212,10 +213,10 @@ export function Invariances() {
             style={{
               color: "var(--ink)",
               fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-              fontSize: 44,
+              fontSize: "var(--display-fz)",
               fontWeight: 500,
               letterSpacing: "-0.03em",
-              lineHeight: "48px",
+              lineHeight: "var(--display-lh)",
               margin: 0,
             }}
           >
@@ -251,6 +252,7 @@ export function Invariances() {
       >
         {/* header */}
         <div
+          className="tbl-header"
           style={{
             alignItems: "center",
             display: "flex",
@@ -278,6 +280,7 @@ export function Invariances() {
         {ROWS.map((row) => (
           <motion.div
             key={row.idx}
+            className="tbl-row"
             variants={{
               hidden: { opacity: 0, y: 14 },
               visible: {
@@ -296,6 +299,7 @@ export function Invariances() {
             }}
           >
             <span
+              className="tbl-idx"
               style={{
                 ...mono,
                 color: "var(--ink-5)",
@@ -308,10 +312,12 @@ export function Invariances() {
             >
               {row.idx}
             </span>
-            <div style={{ flexShrink: 0, height: 80, width: 112 }}>
+            <div className="tbl-visual" style={{ flexShrink: 0, height: 80, width: 112 }}>
               {row.visual}
             </div>
             <div
+              className="tbl-cell"
+              data-label="Domain"
               style={{
                 display: "flex",
                 flex: "0.9 1 0",
@@ -346,9 +352,12 @@ export function Invariances() {
               </span>
             </div>
             <span
+              className="tbl-cell"
+              data-label="Underlying symmetry"
               style={{
                 ...mono,
                 color: "var(--ink-2)",
+                display: "block",
                 flex: "1.3 1 0",
                 flexBasis: 0,
                 fontSize: 13,
@@ -358,8 +367,11 @@ export function Invariances() {
               {row.symmetry}
             </span>
             <span
+              className="tbl-cell"
+              data-label="Today's AI fails at"
               style={{
                 color: "var(--ink-3)",
+                display: "block",
                 flex: "1.7 1 0",
                 flexBasis: 0,
                 fontSize: 13,
@@ -369,8 +381,11 @@ export function Invariances() {
               {row.fail}
             </span>
             <span
+              className="tbl-cell"
+              data-label="Geometry-native fix"
               style={{
                 color: "var(--accent-2)",
+                display: "block",
                 flex: "1.3 1 0",
                 flexBasis: 0,
                 fontSize: 13,

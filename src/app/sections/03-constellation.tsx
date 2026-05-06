@@ -107,8 +107,8 @@ export function Constellation() {
       style={{
         display: "flex",
         flexDirection: "column",
-        paddingBottom: 80,
-        paddingTop: 80,
+        paddingBottom: "var(--section-pad-y)",
+        paddingTop: "var(--section-pad-y)",
       }}
     >
       <Reveal
@@ -117,7 +117,7 @@ export function Constellation() {
           display: "flex",
           justifyContent: "space-between",
           paddingBottom: 32,
-          paddingInline: 56,
+          paddingInline: "var(--pad-x)",
         }}
       >
         <div style={{ alignItems: "center", display: "flex", gap: 12 }}>
@@ -141,43 +141,78 @@ export function Constellation() {
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 1.4, ease: EASE }}
         style={{
+          aspectRatio: "1440 / 560",
           flexShrink: 0,
-          height: 560,
           position: "relative",
-          width: 1440,
+          width: "100%",
         }}
       >
         <ConstellationCanvas />
 
-        <CornerLabel
-          position="tl"
-          eyebrow="A · Chemistry"
-          title="Molecules"
-          caption="Fold by symmetry."
-          delay={2.0}
-        />
-        <CornerLabel
-          position="tr"
-          eyebrow="B · Physics"
-          title="Fields"
-          caption="Conserve quantities."
-          delay={2.15}
-        />
-        <CornerLabel
-          position="bl"
-          eyebrow="C · Markets"
-          title="Invariances"
-          caption="Persist through noise."
-          delay={2.3}
-        />
-        <CornerLabel
-          position="br"
-          eyebrow="D · Engineering"
-          title="Meshes"
-          caption="Obey contact and force."
-          delay={2.45}
-        />
+        {/* desktop: labels in absolute corners overlapping the canvas */}
+        <div className="constellation-labels-desktop hide-md" aria-hidden>
+          <CornerLabel
+            position="tl"
+            eyebrow="A · Chemistry"
+            title="Molecules"
+            caption="Fold by symmetry."
+            delay={2.0}
+          />
+          <CornerLabel
+            position="tr"
+            eyebrow="B · Physics"
+            title="Fields"
+            caption="Conserve quantities."
+            delay={2.15}
+          />
+          <CornerLabel
+            position="bl"
+            eyebrow="C · Markets"
+            title="Invariances"
+            caption="Persist through noise."
+            delay={2.3}
+          />
+          <CornerLabel
+            position="br"
+            eyebrow="D · Engineering"
+            title="Meshes"
+            caption="Obey contact and force."
+            delay={2.45}
+          />
+        </div>
       </motion.div>
+
+      {/* tablet+mobile: labels stacked below canvas as a 2-col grid */}
+      <Reveal
+        className="constellation-labels-mobile"
+        style={{
+          flexWrap: "wrap",
+          gap: 20,
+          paddingInline: "var(--pad-x)",
+          paddingTop: 28,
+        }}
+      >
+        {[
+          { eyebrow: "A · Chemistry", title: "Molecules", caption: "Fold by symmetry." },
+          { eyebrow: "B · Physics", title: "Fields", caption: "Conserve quantities." },
+          { eyebrow: "C · Markets", title: "Invariances", caption: "Persist through noise." },
+          { eyebrow: "D · Engineering", title: "Meshes", caption: "Obey contact and force." },
+        ].map((it) => (
+          <div
+            key={it.eyebrow}
+            style={{
+              display: "flex",
+              flex: "1 1 220px",
+              flexDirection: "column",
+              gap: 6,
+            }}
+          >
+            <span style={cornerEyebrow}>{it.eyebrow}</span>
+            <span style={cornerTitle}>{it.title}</span>
+            <span style={cornerCaption}>{it.caption}</span>
+          </div>
+        ))}
+      </Reveal>
 
       {/* caption strip */}
       <Reveal
@@ -185,9 +220,11 @@ export function Constellation() {
           alignItems: "flex-end",
           borderTop: "1px solid var(--rule)",
           display: "flex",
+          flexWrap: "wrap",
+          gap: 24,
           justifyContent: "space-between",
           paddingTop: 32,
-          paddingInline: 56,
+          paddingInline: "var(--pad-x)",
         }}
       >
         <div

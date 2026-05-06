@@ -14,6 +14,21 @@
   --accent: #8b5cf6;
   --accent-2: #c4b5fd;
   --accent-deep: #3b2a5e;
+
+  /* Responsive type + spacing */
+  --pad-x: clamp(20px, 4vw, 56px);
+  --section-pad-y: clamp(56px, 7vw, 96px);
+  --section-gap: clamp(28px, 4vw, 56px);
+
+  --hero-fz: clamp(46px, 9vw, 88px);
+  --hero-lh: 1.05;
+  --section-fz: clamp(30px, 5vw, 56px);
+  --section-lh: 1.08;
+  --display-fz: clamp(24px, 3.4vw, 44px);
+  --display-lh: 1.1;
+  --row-fz: clamp(20px, 2.4vw, 28px);
+
+  --col-divider: 1px solid var(--rule);
 }
 
 html,
@@ -24,6 +39,8 @@ body {
   font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Belt-and-braces horizontal scroll prevention */
+  overflow-x: clip;
 }
 
 body {
@@ -103,4 +120,154 @@ body {
   transform-origin: center;
   transform-box: fill-box;
   animation: ring-pulse 2.4s ease-out infinite;
+}
+
+/* ─────────────── Responsive utility classes ─────────────── */
+
+.shell {
+  margin: 0 auto;
+  max-width: 1440px;
+  width: 100%;
+}
+
+/* Hide elements below specific breakpoints */
+@media (max-width: 720px) {
+  .hide-sm {
+    display: none !important;
+  }
+}
+@media (max-width: 1024px) {
+  .hide-md {
+    display: none !important;
+  }
+}
+
+/* Stack multi-column flex rows below breakpoints */
+.stack-md {
+  display: flex;
+}
+@media (max-width: 1024px) {
+  .stack-md {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  /* Vertical column dividers become horizontal rules between stacked sections */
+  .stack-md > * + * {
+    border-left: 0 !important;
+  }
+  .stack-md.with-rules > * + * {
+    border-top: 1px solid var(--rule);
+  }
+}
+
+.stack-sm {
+  display: flex;
+}
+@media (max-width: 720px) {
+  .stack-sm {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .stack-sm > * + * {
+    border-left: 0 !important;
+  }
+  .stack-sm.with-rules > * + * {
+    border-top: 1px solid var(--rule);
+  }
+}
+
+/* Wrap children at narrower viewports, useful for the body grid */
+.wrap-md {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+/* Invariances table row collapse */
+.tbl-row {
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 900px) {
+  .tbl-row {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding-block: 24px !important;
+  }
+  .tbl-row > * {
+    flex: none !important;
+    width: 100% !important;
+  }
+  .tbl-row .tbl-idx {
+    width: auto !important;
+  }
+  .tbl-row .tbl-visual {
+    align-self: flex-start;
+  }
+  /* Give the structural data fields a label so they read as cards */
+  .tbl-row .tbl-cell::before {
+    content: attr(data-label);
+    color: var(--ink-5);
+    display: block;
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 12px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .tbl-header {
+    display: none !important;
+  }
+}
+
+/* For sections that center an SVG visualization at fixed dimensions, allow overflow */
+.fig-overflow {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Speedup chart scrolls horizontally on narrow viewports */
+@media (max-width: 1024px) {
+  .chart-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .chart-scroll > * {
+    min-width: 1100px;
+  }
+}
+
+/* Constellation labels: desktop layer is absolute corners; mobile shows the
+   stacked grid below the canvas. */
+.constellation-labels-desktop {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.constellation-labels-mobile {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .constellation-labels-mobile {
+    display: flex;
+  }
+}
+
+/* Paper-list badges align left on narrow viewports */
+@media (max-width: 720px) {
+  .paper-badge {
+    align-items: flex-start !important;
+    width: 100% !important;
+  }
+}
+
+/* Hide custom cursor on coarse pointers */
+@media (pointer: coarse) {
+  body {
+    cursor: auto !important;
+  }
 }

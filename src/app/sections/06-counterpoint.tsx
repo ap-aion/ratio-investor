@@ -270,8 +270,8 @@ export function Counterpoint() {
         display: "flex",
         flexDirection: "column",
         gap: 40,
-        paddingBlock: 80,
-        paddingInline: 56,
+        paddingBlock: "var(--section-pad-y)",
+        paddingInline: "var(--pad-x)",
         position: "relative",
       }}
     >
@@ -305,10 +305,10 @@ export function Counterpoint() {
           style={{
             color: "var(--ink)",
             fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-            fontSize: 56,
+            fontSize: "var(--section-fz)",
             fontWeight: 500,
             letterSpacing: "-0.035em",
-            lineHeight: "60px",
+            lineHeight: "var(--section-lh)",
             margin: 0,
             maxWidth: 900,
             skewX: skew,
@@ -321,6 +321,7 @@ export function Counterpoint() {
 
       {/* Diptych container */}
       <div
+        className="stack-md with-rules"
         style={{
           borderTop: "1px solid var(--rule)",
           display: "flex",

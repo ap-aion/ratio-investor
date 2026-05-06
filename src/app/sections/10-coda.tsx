@@ -176,8 +176,8 @@ export function Coda() {
         flexDirection: "column",
         gap: 64,
         paddingBottom: 32,
-        paddingInline: 56,
-        paddingTop: 96,
+        paddingInline: "var(--pad-x)",
+        paddingTop: "var(--section-pad-y)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -186,12 +186,12 @@ export function Coda() {
       <div
         aria-hidden
         style={{
-          height: 540,
+          aspectRatio: "1440 / 540",
           left: 0,
           pointerEvents: "none",
           position: "absolute",
           top: 0,
-          width: 1440,
+          width: "100%",
           zIndex: 0,
           maskImage:
             "linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
@@ -231,10 +231,10 @@ export function Coda() {
           style={{
             color: "var(--ink)",
             fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
-            fontSize: 64,
+            fontSize: "clamp(34px, 6vw, 64px)",
             fontWeight: 500,
             letterSpacing: "-0.04em",
-            lineHeight: "68px",
+            lineHeight: 1.07,
             margin: 0,
             maxWidth: 1100,
             textAlign: "center",
@@ -299,6 +299,8 @@ export function Coda() {
           alignItems: "center",
           borderTop: "1px solid var(--rule)",
           display: "flex",
+          flexWrap: "wrap",
+          gap: 16,
           justifyContent: "space-between",
           paddingTop: 24,
         }}

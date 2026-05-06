@@ -176,11 +176,11 @@ export function CodaHorizonCanvas() {
         position: [0, 0, 5],
       }}
       style={{
-        height: H,
+        height: "100%",
         left: 0,
         position: "absolute",
         top: 0,
-        width: W,
+        width: "100%",
         zIndex: 0,
       }}
     >
