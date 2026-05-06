@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #0c0c0b;
+  --bg-elev: #0f0f0e;
+  --bg-deep: #0a0a09;
+  --rule: #2a2a28;
+  --rule-strong: #3b3a37;
+  --ink: #fafaf9;
+  --ink-2: #eeeeec;
+  --ink-3: #a1a09a;
+  --ink-4: #7c7b74;
+  --ink-5: #62615b;
+  --accent: #8b5cf6;
+  --accent-2: #c4b5fd;
+  --accent-deep: #3b2a5e;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-plex-sans), system-ui, sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  min-height: 100dvh;
+}
+
+/* Force the design's intended canvas font stacks */
+.font-mono,
+[class*="font-mono"] {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+/* The Paper export references "IBMPlexSans-Medium" / "IBM Plex Sans" — re-map those families to the loaded font */
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: local("IBM Plex Sans");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "IBM Plex Mono";
+  src: local("IBM Plex Mono");
+  font-display: swap;
+}
+
+/* Subtle film grain overlay across the page */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.35);
+  color: #fafaf9;
+}
+
+/* Smooth load-in for the doc */
+@keyframes pitch-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pitch-fade {
+  animation: pitch-fade 0.9s ease both;
+}
+
+/* Subtle pulse for the active locator dot in the constellation */
+@keyframes ring-pulse {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.95;
+  }
+  60% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.locator-pulse {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: ring-pulse 2.4s ease-out infinite;
 }
