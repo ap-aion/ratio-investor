@@ -1,9 +1,13 @@
 "use client";
 
-import { motion, useInView } from "motion/react";
-import { useRef } from "react";
-import { POINTS, EDGES } from "./_constellation-data";
+import { motion } from "motion/react";
+import dynamic from "next/dynamic";
 import { CountUp, EASE, Reveal } from "./_motion";
+
+const ConstellationCanvas = dynamic(
+  () => import("./_constellation-three").then((m) => m.ConstellationCanvas),
+  { ssr: false }
+);
 
 const mono: React.CSSProperties = {
   fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
@@ -97,26 +101,14 @@ function CornerLabel({
 }
 
 export function Constellation() {
-  const svgRef = useRef<SVGSVGElement>(null);
-  const inView = useInView(svgRef, { amount: 0.2, once: true });
-
-  // Order edges roughly outside-in by distance from centroid for a "ripple" draw
-  const orderedEdges = EDGES.map(([x1, y1, x2, y2, stroke], i) => {
-    const mx = (x1 + x2) / 2 - 720;
-    const my = (y1 + y2) / 2 - 280;
-    const r = Math.sqrt(mx * mx + my * my);
-    return { x1, y1, x2, y2, stroke, r, i };
-  }).sort((a, b) => b.r - a.r); // farthest-first
-
-  const totalEdgeDelay = 1.2; // seconds across all edges
-  const edgeStart = 0.2;
-
   return (
     <section
+      id="substrate"
       style={{
         display: "flex",
         flexDirection: "column",
         paddingBottom: 80,
+        paddingTop: 80,
       }}
     >
       <Reveal
@@ -143,7 +135,11 @@ export function Constellation() {
         <span style={{ ...muted, textTransform: "none" }}>Fig. 01</span>
       </Reveal>
 
-      <div
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 1.4, ease: EASE }}
         style={{
           flexShrink: 0,
           height: 560,
@@ -151,118 +147,7 @@ export function Constellation() {
           width: 1440,
         }}
       >
-        <svg
-          ref={svgRef}
-          width="1440"
-          height="560"
-          viewBox="0 0 1440 560"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ position: "absolute", top: 0, left: 0 }}
-          aria-hidden
-        >
-          <defs>
-            <radialGradient id="constellation-glow" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(139,92,246,0.18)" />
-              <stop offset="100%" stopColor="rgba(139,92,246,0)" />
-            </radialGradient>
-          </defs>
-          <motion.circle
-            cx="720"
-            cy="280"
-            r="240"
-            fill="url(#constellation-glow)"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={inView ? { opacity: 1, scale: 1 } : undefined}
-            transition={{ duration: 1.6, ease: EASE }}
-            style={{ transformOrigin: "720px 280px", transformBox: "fill-box" }}
-          />
-
-          {orderedEdges.map(({ x1, y1, x2, y2, stroke, i }, idx) => {
-            const delay =
-              edgeStart + (idx / orderedEdges.length) * totalEdgeDelay;
-            return (
-              <motion.line
-                key={`e${i}`}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke={stroke}
-                strokeWidth={0.5}
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={
-                  inView ? { pathLength: 1, opacity: 1 } : undefined
-                }
-                transition={{
-                  pathLength: { duration: 0.6, ease: EASE, delay },
-                  opacity: { duration: 0.3, delay },
-                }}
-              />
-            );
-          })}
-
-          {POINTS.map(([cx, cy, r, fill], i) => {
-            // points pop in with the closest edges
-            const delay = edgeStart + 0.6 + (i / POINTS.length) * 0.8;
-            return (
-              <motion.circle
-                key={`p${i}`}
-                cx={cx}
-                cy={cy}
-                r={r}
-                fill={fill}
-                initial={{ scale: 0, opacity: 0 }}
-                animate={inView ? { scale: 1, opacity: 1 } : undefined}
-                transition={{ duration: 0.4, ease: EASE, delay }}
-                style={{
-                  transformOrigin: `${cx}px ${cy}px`,
-                  transformBox: "fill-box",
-                }}
-              />
-            );
-          })}
-
-          {/* highlighted locator — appears last */}
-          <motion.circle
-            cx="710.7"
-            cy="192.7"
-            r="6"
-            fill="none"
-            stroke="#8B5CF6"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={inView ? { scale: 1, opacity: 1 } : undefined}
-            transition={{ duration: 0.6, ease: EASE, delay: 2.1 }}
-            style={{
-              transformOrigin: "710.7px 192.7px",
-              transformBox: "fill-box",
-            }}
-          />
-          <motion.circle
-            cx="710.7"
-            cy="192.7"
-            r="11"
-            fill="none"
-            stroke="#8B5CF680"
-            strokeWidth={0.5}
-            className="locator-pulse"
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : undefined}
-            transition={{ duration: 0.5, delay: 2.3 }}
-          />
-          <motion.circle
-            cx="710.7"
-            cy="192.7"
-            r="3"
-            fill="#8B5CF6"
-            initial={{ scale: 0 }}
-            animate={inView ? { scale: 1 } : undefined}
-            transition={{ duration: 0.5, ease: EASE, delay: 2.1 }}
-            style={{
-              transformOrigin: "710.7px 192.7px",
-              transformBox: "fill-box",
-            }}
-          />
-        </svg>
+        <ConstellationCanvas />
 
         <CornerLabel
           position="tl"
@@ -292,7 +177,7 @@ export function Constellation() {
           caption="Obey contact and force."
           delay={2.45}
         />
-      </div>
+      </motion.div>
 
       {/* caption strip */}
       <Reveal

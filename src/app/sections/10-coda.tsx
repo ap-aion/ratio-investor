@@ -1,7 +1,13 @@
 "use client";
 
 import { motion } from "motion/react";
+import dynamic from "next/dynamic";
 import { EASE, Reveal } from "./_motion";
+
+const CodaHorizonCanvas = dynamic(
+  () => import("./_coda-three").then((m) => m.CodaHorizonCanvas),
+  { ssr: false }
+);
 
 const mono: React.CSSProperties = {
   fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
@@ -35,17 +41,7 @@ function HorizonGlow() {
         </linearGradient>
       </defs>
 
-      <motion.ellipse
-        cx="664"
-        cy="100"
-        rx="500"
-        ry="60"
-        fill="url(#coda-glow)"
-        initial={{ opacity: 0, ry: 20 }}
-        whileInView={{ opacity: 1, ry: 60 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 2, ease: EASE }}
-      />
+      {/* radial glow now provided by Three.js layer */}
       <motion.line
         x1="0"
         y1="100"
@@ -182,8 +178,30 @@ export function Coda() {
         paddingBottom: 32,
         paddingInline: 56,
         paddingTop: 96,
+        position: "relative",
+        overflow: "hidden",
       }}
     >
+      {/* WebGL horizon — sits behind the upper hero block */}
+      <div
+        aria-hidden
+        style={{
+          height: 540,
+          left: 0,
+          pointerEvents: "none",
+          position: "absolute",
+          top: 0,
+          width: 1440,
+          zIndex: 0,
+          maskImage:
+            "linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
+          WebkitMaskImage:
+            "linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
+        }}
+      >
+        <CodaHorizonCanvas />
+      </div>
+
       {/* horizon hero */}
       <div
         style={{
@@ -191,6 +209,8 @@ export function Coda() {
           display: "flex",
           flexDirection: "column",
           gap: 32,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         <HorizonGlow />
@@ -281,206 +301,6 @@ export function Coda() {
         </div>
       </div>
 
-      {/* ask card */}
-      <Reveal
-        amount={0.15}
-        style={{
-          border: "1px solid var(--rule)",
-          display: "flex",
-        }}
-      >
-        <div
-          style={{
-            borderRight: "1px solid var(--rule)",
-            display: "flex",
-            flex: "1.4 1 0",
-            flexBasis: 0,
-            flexDirection: "column",
-            gap: 12,
-            padding: 32,
-          }}
-        >
-          <span
-            style={{
-              ...mono,
-              color: "var(--ink-5)",
-              fontSize: 10,
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              lineHeight: "12px",
-              textTransform: "uppercase",
-            }}
-          >
-            Round · Stage
-          </span>
-          <div style={{ alignItems: "baseline", display: "flex", gap: 12 }}>
-            <span
-              style={{
-                ...mono,
-                color: "var(--ink)",
-                fontSize: 38,
-                fontVariantNumeric: "tabular-nums",
-                letterSpacing: "-0.02em",
-                lineHeight: "40px",
-              }}
-            >
-              [ TBD ]
-            </span>
-            <span
-              style={{
-                ...mono,
-                color: "var(--ink-5)",
-                fontSize: 11,
-                letterSpacing: "0.06em",
-                lineHeight: "14px",
-                textTransform: "uppercase",
-              }}
-            >
-              to be confirmed
-            </span>
-          </div>
-          <span
-            style={{
-              color: "var(--ink-3)",
-              fontSize: 13,
-              lineHeight: "19px",
-            }}
-          >
-            Pre-seed → seed considered. Replace this block with the round size,
-            valuation, and lead terms.
-          </span>
-        </div>
-
-        <div
-          style={{
-            borderRight: "1px solid var(--rule)",
-            display: "flex",
-            flex: "1 1 0",
-            flexBasis: 0,
-            flexDirection: "column",
-            gap: 12,
-            padding: 32,
-          }}
-        >
-          <span
-            style={{
-              ...mono,
-              color: "var(--ink-5)",
-              fontSize: 10,
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              lineHeight: "12px",
-              textTransform: "uppercase",
-            }}
-          >
-            Use of Funds
-          </span>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 6,
-              paddingTop: 4,
-            }}
-          >
-            {[
-              "Compute · simulation",
-              "Research talent",
-              "Vertical pilots",
-            ].map((item, i, arr) => (
-              <div
-                key={item}
-                style={{
-                  alignItems: "center",
-                  borderBottom:
-                    i < arr.length - 1 ? "1px solid var(--rule)" : undefined,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  paddingBlock: 6,
-                }}
-              >
-                <span
-                  style={{
-                    ...mono,
-                    color: "var(--ink)",
-                    fontSize: 11,
-                    letterSpacing: "0.04em",
-                    lineHeight: "14px",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {item}
-                </span>
-                <span
-                  style={{
-                    ...mono,
-                    color: "var(--accent-2)",
-                    fontSize: 11,
-                    fontVariantNumeric: "tabular-nums",
-                    lineHeight: "14px",
-                  }}
-                >
-                  — %
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: "flex",
-            flex: "1 1 0",
-            flexBasis: 0,
-            flexDirection: "column",
-            gap: 12,
-            padding: 32,
-          }}
-        >
-          <span
-            style={{
-              ...mono,
-              color: "var(--ink-5)",
-              fontSize: 10,
-              fontWeight: 500,
-              letterSpacing: "0.08em",
-              lineHeight: "12px",
-              textTransform: "uppercase",
-            }}
-          >
-            Contact
-          </span>
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: 4 }}
-          >
-            <span
-              style={{
-                color: "var(--ink)",
-                fontFamily:
-                  '"IBM Plex Sans", system-ui, sans-serif',
-                fontSize: 18,
-                fontWeight: 500,
-                lineHeight: "22px",
-              }}
-            >
-              [ founder@ratio.labs ]
-            </span>
-            <span
-              style={{
-                ...mono,
-                color: "var(--ink-5)",
-                fontSize: 10,
-                letterSpacing: "0.04em",
-                lineHeight: "12px",
-                textTransform: "uppercase",
-              }}
-            >
-              Replace with deck recipient routing
-            </span>
-          </div>
-        </div>
-      </Reveal>
-
       {/* footer */}
       <Reveal
         style={{
@@ -491,45 +311,27 @@ export function Coda() {
           paddingTop: 24,
         }}
       >
-        <div style={{ alignItems: "center", display: "flex", gap: 14 }}>
-          <div
-            aria-hidden
+        <div style={{ alignItems: "center", display: "flex", gap: 16 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/ratio-labs.png"
+            alt="Ratio Labs"
+            width={1236}
+            height={522}
             style={{
-              alignItems: "center",
-              border: "1px solid var(--ink)",
-              display: "flex",
-              flexShrink: 0,
-              height: 24,
-              justifyContent: "center",
-              width: 24,
+              display: "block",
+              height: 26,
+              width: "auto",
             }}
-          >
-            <span
-              style={{
-                ...mono,
-                color: "var(--ink)",
-                fontSize: 11,
-                fontWeight: 700,
-                letterSpacing: "-0.02em",
-                lineHeight: "14px",
-              }}
-            >
-              R
-            </span>
-          </div>
+          />
           <span
             style={{
-              ...mono,
-              color: "var(--ink)",
-              fontSize: 10,
-              fontWeight: 500,
-              letterSpacing: "0.18em",
-              lineHeight: "12px",
-              textTransform: "uppercase",
+              background: "var(--rule)",
+              flexShrink: 0,
+              height: 12,
+              width: 1,
             }}
-          >
-            Ratio Labs
-          </span>
+          />
           <span
             style={{
               ...mono,

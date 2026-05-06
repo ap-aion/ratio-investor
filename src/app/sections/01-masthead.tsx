@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { Magnetic } from "./_cursor";
 import { ScrollProgress, useActiveSection } from "./_motion";
 
 const mono: React.CSSProperties = {
@@ -48,49 +49,36 @@ export function Masthead() {
             paddingBottom: 18,
           }}
         >
-          <div style={{ alignItems: "center", display: "flex", gap: 14 }}>
-            <motion.a
-              href="#thesis"
-              whileHover={{ background: "var(--ink)", color: "var(--bg)" }}
-              transition={{ duration: 0.18, ease: "easeOut" }}
-              aria-label="Top of brief"
-              style={{
-                alignItems: "center",
-                border: "1px solid var(--ink)",
-                color: "var(--ink)",
-                display: "flex",
-                flexShrink: 0,
-                height: 32,
-                justifyContent: "center",
-                textDecoration: "none",
-                width: 32,
-              }}
-            >
-              <span
+          <div style={{ alignItems: "center", display: "flex", gap: 18 }}>
+            <Magnetic strength={0.35} radius={70}>
+              <motion.a
+                href="#thesis"
+                aria-label="Ratio Labs — top of brief"
+                data-cursor="hover"
+                data-cursor-label="top"
+                whileHover={{ opacity: 0.78 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 style={{
-                  ...mono,
-                  fontSize: 14,
-                  fontWeight: 700,
-                  letterSpacing: "-0.02em",
-                  lineHeight: "18px",
+                  alignItems: "center",
+                  display: "flex",
+                  flexShrink: 0,
+                  textDecoration: "none",
                 }}
               >
-                R
-              </span>
-            </motion.a>
-            <span
-              style={{
-                ...mono,
-                color: "var(--ink)",
-                fontSize: 14,
-                fontWeight: 500,
-                letterSpacing: "0.18em",
-                lineHeight: "18px",
-                textTransform: "uppercase",
-              }}
-            >
-              Ratio Labs
-            </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/ratio-labs.png"
+                  alt="Ratio Labs"
+                  width={1236}
+                  height={522}
+                  style={{
+                    display: "block",
+                    height: 38,
+                    width: "auto",
+                  }}
+                />
+              </motion.a>
+            </Magnetic>
             <span
               style={{
                 background: "var(--rule)",
@@ -117,39 +105,41 @@ export function Masthead() {
             {NAV_ITEMS.map((item) => {
               const isActive = active === item.id;
               return (
-                <motion.a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  whileHover={{ color: "var(--ink)" }}
-                  transition={{ duration: 0.2 }}
-                  style={{
-                    ...mono,
-                    color: isActive ? "var(--ink)" : "var(--ink-5)",
-                    fontSize: 10,
-                    fontWeight: 500,
-                    letterSpacing: "0.08em",
-                    lineHeight: "12px",
-                    position: "relative",
-                    textDecoration: "none",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {item.label}
-                  {isActive && (
-                    <motion.span
-                      layoutId="nav-active-underline"
-                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                      style={{
-                        background: "var(--accent-2)",
-                        bottom: -6,
-                        height: 1,
-                        left: 0,
-                        position: "absolute",
-                        right: 0,
-                      }}
-                    />
-                  )}
-                </motion.a>
+                <Magnetic key={item.id} strength={0.4} radius={70}>
+                  <motion.a
+                    href={`#${item.id}`}
+                    whileHover={{ color: "var(--ink)" }}
+                    transition={{ duration: 0.2 }}
+                    data-cursor="hover"
+                    style={{
+                      ...mono,
+                      color: isActive ? "var(--ink)" : "var(--ink-5)",
+                      fontSize: 10,
+                      fontWeight: 500,
+                      letterSpacing: "0.08em",
+                      lineHeight: "12px",
+                      position: "relative",
+                      textDecoration: "none",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {item.label}
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-active-underline"
+                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                        style={{
+                          background: "var(--accent-2)",
+                          bottom: -6,
+                          height: 1,
+                          left: 0,
+                          position: "absolute",
+                          right: 0,
+                        }}
+                      />
+                    )}
+                  </motion.a>
+                </Magnetic>
               );
             })}
 

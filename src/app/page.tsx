@@ -8,6 +8,7 @@ import { Conviction } from "./sections/07-conviction";
 import { Speedup } from "./sections/08-speedup";
 import { Moat } from "./sections/09-moat";
 import { Coda } from "./sections/10-coda";
+import { KeywordMarquee } from "./sections/_marquee";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       >
         <Masthead />
         <ColdOpen />
+        <KeywordMarquee />
         <Constellation />
         <Invariances />
         <Validation />

@@ -1,19 +1,149 @@
 "use client";
 
-import { motion } from "motion/react";
+import {
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
+import { useRef, useState } from "react";
 import {
   CountUp,
   EASE,
   Reveal,
   RevealChild,
   RevealStagger,
+  useScrollSkew,
+  useSectionProgress,
 } from "./_motion";
 
 const mono: React.CSSProperties = {
   fontFamily: '"IBM Plex Mono", ui-monospace, monospace',
 };
 
-function CFDVisual() {
+type SpeedupCardData = {
+  eyebrow: string;
+  value: number;
+  caption: string;
+  accent: boolean;
+  scrollSlice: [number, number];
+};
+
+function SpeedupCard({
+  card,
+  progress,
+  isLast,
+}: {
+  card: SpeedupCardData;
+  progress: MotionValue<number>;
+  isLast: boolean;
+}) {
+  const [s, e] = card.scrollSlice;
+  // scale up briefly when this card's slice hits, then settle
+  const scale = useTransform(
+    progress,
+    [s - 0.05, s, (s + e) / 2, e + 0.05],
+    [1, 1.04, 1.08, 1]
+  );
+  // accent color drift on the eyebrow when active
+  const eyebrowColor = useTransform(
+    progress,
+    [s - 0.05, s, e, e + 0.1],
+    [
+      card.accent ? "#C4B5FD" : "#62615B",
+      "#FFFFFF",
+      card.accent ? "#C4B5FD" : "#62615B",
+      card.accent ? "#C4B5FD" : "#62615B",
+    ]
+  );
+
+  return (
+    <motion.div
+      whileHover={
+        card.accent
+          ? { background: "rgba(139,92,246,0.10)" }
+          : { background: "rgba(255,255,255,0.02)" }
+      }
+      style={{
+        background: card.accent ? "rgba(139,92,246,0.06)" : undefined,
+        borderRight: !isLast ? "1px solid var(--rule)" : undefined,
+        cursor: "default",
+        display: "flex",
+        flex: "1 1 0",
+        flexBasis: 0,
+        flexDirection: "column",
+        gap: 6,
+        paddingBlock: 28,
+        paddingInline: 24,
+      }}
+    >
+      <motion.span
+        style={{
+          ...mono,
+          color: eyebrowColor,
+          fontSize: 10,
+          fontWeight: 500,
+          letterSpacing: "0.08em",
+          lineHeight: "12px",
+          textTransform: "uppercase",
+        }}
+      >
+        {card.eyebrow}
+      </motion.span>
+      <motion.span
+        style={{
+          ...mono,
+          color: "var(--ink)",
+          display: "inline-block",
+          fontSize: 56,
+          fontVariantNumeric: "tabular-nums",
+          letterSpacing: "-0.03em",
+          lineHeight: "56px",
+          scale,
+          transformOrigin: "0 50%",
+        }}
+      >
+        <CountUp to={card.value} duration={2} suffix="×" />
+      </motion.span>
+      <span
+        style={{
+          color: card.accent ? "var(--accent-2)" : "var(--ink-3)",
+          fontSize: 12,
+          lineHeight: "16px",
+        }}
+      >
+        {card.caption}
+      </span>
+    </motion.div>
+  );
+}
+
+function CFDVisual({ progress }: { progress: MotionValue<number> }) {
+  // M counts up 0 → 25 between progress 0.05 → 0.35
+  const machNum = useTransform(progress, [0.05, 0.35], [0, 25], {
+    clamp: true,
+  });
+  const [machText, setMachText] = useState("M∞ = 0");
+  useMotionValueEvent(machNum, "change", (v) => {
+    setMachText(`M∞ = ${Math.round(v)}`);
+  });
+  // freestream arrow length: 0 → 60
+  const freestreamLen = useTransform(progress, [0.05, 0.3], [0, 60], {
+    clamp: true,
+  });
+  const fsX2 = useTransform(freestreamLen, (l) => 100 + l);
+  const fsHead1 = useTransform(freestreamLen, (l) => 100 + l);
+  const fsHead2 = useTransform(freestreamLen, (l) => 100 + l + 8);
+
+  // bow shock pathLength
+  const shockProg = useTransform(progress, [0.15, 0.45], [0, 1], {
+    clamp: true,
+  });
+
+  // capsule subtle parallax
+  const capsuleX = useTransform(progress, [0, 1], [-12, 12]);
+
   return (
     <svg
       width="100%"
@@ -68,27 +198,48 @@ function CFDVisual() {
         </text>
       ))}
 
-      {/* Freestream arrow */}
+      {/* Freestream arrow — extends with scroll */}
       <g>
-        <line x1="100" y1="138" x2="160" y2="138" stroke="#C4B5FD" strokeWidth="0.7" />
-        <line x1="100" y1="142" x2="160" y2="142" stroke="#C4B5FD" strokeWidth="0.7" />
-        <line x1="100" y1="134" x2="160" y2="134" stroke="#C4B5FD99" strokeWidth="0.5" />
-        <line x1="100" y1="146" x2="160" y2="146" stroke="#C4B5FD99" strokeWidth="0.5" />
-        <polygon points="160,138 168,140 160,142" fill="#C4B5FD" />
-        <text x="100" y="124" fontFamily="IBM Plex Mono" fontSize="9" fill="#C4B5FD" letterSpacing="0.06em" style={{ textTransform: "uppercase" }}>
-          M∞ = 25
-        </text>
-        <text x="100" y="160" fontFamily="IBM Plex Mono" fontSize="8" fill="#62615B" letterSpacing="0.06em" style={{ textTransform: "uppercase" }}>
+        <motion.line x1="100" y1="138" x2={fsX2} y2="138" stroke="#C4B5FD" strokeWidth="0.7" />
+        <motion.line x1="100" y1="142" x2={fsX2} y2="142" stroke="#C4B5FD" strokeWidth="0.7" />
+        <motion.line x1="100" y1="134" x2={fsX2} y2="134" stroke="#C4B5FD99" strokeWidth="0.5" />
+        <motion.line x1="100" y1="146" x2={fsX2} y2="146" stroke="#C4B5FD99" strokeWidth="0.5" />
+        <motion.polygon
+          points="0,-2 8,0 0,2"
+          fill="#C4B5FD"
+          style={{ x: fsHead1, y: 140 }}
+        />
+        <motion.text
+          x="100"
+          y="124"
+          fontFamily="IBM Plex Mono"
+          fontSize="9"
+          fill="#C4B5FD"
+          letterSpacing="0.06em"
+          style={{ textTransform: "uppercase" }}
+        >
+          {machText}
+        </motion.text>
+        <text
+          x="100"
+          y="160"
+          fontFamily="IBM Plex Mono"
+          fontSize="8"
+          fill="#62615B"
+          letterSpacing="0.06em"
+          style={{ textTransform: "uppercase" }}
+        >
           freestream
         </text>
       </g>
 
-      {/* Bow shock */}
-      <path
+      {/* Bow shock — draws on with scroll */}
+      <motion.path
         d="M 240 60 Q 380 80 520 138 Q 380 198 240 220"
         stroke="#C4B5FD"
         fill="none"
         strokeDasharray="6 3"
+        style={{ pathLength: shockProg }}
       />
       <text x="270" y="50" fontFamily="IBM Plex Mono" fontSize="9" fill="#C4B5FD" letterSpacing="0.06em" style={{ textTransform: "uppercase" }}>
         Bow shock
@@ -102,21 +253,23 @@ function CFDVisual() {
       <path d="M 280 200 Q 400 185 530 142" stroke="#FAFAF924" strokeWidth="0.5" fill="none" />
       <path d="M 280 220 Q 400 200 520 148" stroke="#FAFAF91A" strokeWidth="0.5" fill="none" />
 
-      {/* Capsule body */}
-      <ellipse cx="600" cy="140" rx="80" ry="65" fill="url(#cfd-press)" style={{ opacity: 0.4 }} />
-      <path
-        d="M 540 90 L 740 90 L 760 105 L 760 175 L 740 190 L 540 190 Q 530 190 530 180 L 525 145 Q 528 140 525 135 L 530 100 Q 530 90 540 90 Z"
-        stroke="#FAFAF9"
-        strokeWidth="1.2"
-        fill="#0C0C0B"
-      />
-      <path
-        d="M 542 100 L 740 100 M 542 110 L 740 110 M 542 120 L 758 120 M 542 130 L 760 130 M 542 140 L 760 140 M 542 150 L 760 150 M 542 160 L 758 160 M 542 170 L 740 170 M 542 180 L 740 180"
-        stroke="#FAFAF914"
-        strokeWidth="0.4"
-      />
-      <ellipse cx="528" cy="140" rx="14" ry="14" fill="url(#cfd-stag)" />
-      <circle cx="528" cy="140" r="3" fill="#FAFAF9" />
+      {/* Capsule body — subtle parallax with scroll */}
+      <motion.g style={{ x: capsuleX }}>
+        <ellipse cx="600" cy="140" rx="80" ry="65" fill="url(#cfd-press)" style={{ opacity: 0.4 }} />
+        <path
+          d="M 540 90 L 740 90 L 760 105 L 760 175 L 740 190 L 540 190 Q 530 190 530 180 L 525 145 Q 528 140 525 135 L 530 100 Q 530 90 540 90 Z"
+          stroke="#FAFAF9"
+          strokeWidth="1.2"
+          fill="#0C0C0B"
+        />
+        <path
+          d="M 542 100 L 740 100 M 542 110 L 740 110 M 542 120 L 758 120 M 542 130 L 760 130 M 542 140 L 760 140 M 542 150 L 760 150 M 542 160 L 758 160 M 542 170 L 740 170 M 542 180 L 740 180"
+          stroke="#FAFAF914"
+          strokeWidth="0.4"
+        />
+        <ellipse cx="528" cy="140" rx="14" ry="14" fill="url(#cfd-stag)" />
+        <circle cx="528" cy="140" r="3" fill="#FAFAF9" />
+      </motion.g>
 
       <text x="490" y="105" textAnchor="end" fontFamily="IBM Plex Mono" fontSize="9" fill="#FAFAF9" letterSpacing="0.06em" style={{ textTransform: "uppercase" }}>
         Stagnation
@@ -270,9 +423,14 @@ const PAPERS: Paper[] = [
 ];
 
 export function Speedup() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const progress = useSectionProgress(sectionRef);
+  const skew = useScrollSkew(3);
+
   return (
     <section
       id="proof"
+      ref={sectionRef}
       style={{
         borderTop: "1px solid var(--rule)",
         display: "flex",
@@ -280,9 +438,10 @@ export function Speedup() {
         gap: 48,
         paddingBlock: 80,
         paddingInline: 56,
+        position: "relative",
       }}
     >
-      <Reveal
+      <motion.div
         style={{
           alignItems: "flex-end",
           display: "flex",
@@ -311,7 +470,7 @@ export function Speedup() {
           >
             [ 07 / Proof ]
           </span>
-          <h2
+          <motion.h2
             style={{
               color: "var(--ink)",
               fontFamily: '"IBM Plex Sans", system-ui, sans-serif',
@@ -320,10 +479,12 @@ export function Speedup() {
               letterSpacing: "-0.03em",
               lineHeight: "48px",
               margin: 0,
+              skewX: skew,
+              transformOrigin: "0 50%",
             }}
           >
             Five orders of magnitude faster than the reference solver.
-          </h2>
+          </motion.h2>
         </div>
         <span
           style={{
@@ -337,7 +498,7 @@ export function Speedup() {
         >
           Fig. 02 · Single H100 node
         </span>
-      </Reveal>
+      </motion.div>
 
       {/* chart card */}
       <Reveal
@@ -506,7 +667,7 @@ export function Speedup() {
               </span>
             </div>
           </div>
-          <CFDVisual />
+          <CFDVisual progress={progress} />
         </div>
 
         {/* bars */}
@@ -621,80 +782,29 @@ export function Speedup() {
               value: 54000,
               caption: "1.5h reference → 0.1s inference",
               accent: false,
+              scrollSlice: [0.55, 0.62] as [number, number],
             },
             {
               eyebrow: "Speedup · 3D Hypersonic · 1× H100",
               value: 93600,
               caption: "22.8M-cell CFD on Orion outer mold line.",
               accent: true,
+              scrollSlice: [0.65, 0.72] as [number, number],
             },
             {
               eyebrow: "Speedup · 3D · 2× H100",
               value: 156000,
               caption: "Linear scaling across the node.",
               accent: true,
+              scrollSlice: [0.75, 0.82] as [number, number],
             },
           ].map((m, i, arr) => (
-            <motion.div
+            <SpeedupCard
               key={m.eyebrow}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.7, ease: EASE, delay: i * 0.18 }}
-              whileHover={
-                m.accent
-                  ? { background: "rgba(139,92,246,0.10)" }
-                  : { background: "rgba(255,255,255,0.02)" }
-              }
-              style={{
-                background: m.accent ? "rgba(139,92,246,0.06)" : undefined,
-                borderRight:
-                  i < arr.length - 1 ? "1px solid var(--rule)" : undefined,
-                cursor: "default",
-                display: "flex",
-                flex: "1 1 0",
-                flexBasis: 0,
-                flexDirection: "column",
-                gap: 6,
-                paddingBlock: 28,
-                paddingInline: 24,
-              }}
-            >
-              <span
-                style={{
-                  ...mono,
-                  color: m.accent ? "var(--accent-2)" : "var(--ink-5)",
-                  fontSize: 10,
-                  fontWeight: 500,
-                  letterSpacing: "0.08em",
-                  lineHeight: "12px",
-                  textTransform: "uppercase",
-                }}
-              >
-                {m.eyebrow}
-              </span>
-              <span
-                style={{
-                  ...mono,
-                  color: "var(--ink)",
-                  fontSize: 56,
-                  fontVariantNumeric: "tabular-nums",
-                  letterSpacing: "-0.03em",
-                  lineHeight: "56px",
-                }}
-              >
-                <CountUp to={m.value} duration={2} suffix="×" />
-              </span>
-              <span
-                style={{
-                  color: m.accent ? "var(--accent-2)" : "var(--ink-3)",
-                  fontSize: 12,
-                  lineHeight: "16px",
-                }}
-              >
-                {m.caption}
-              </span>
-            </motion.div>
+              card={m}
+              progress={progress}
+              isLast={i === arr.length - 1}
+            />
           ))}
         </div>
       </Reveal>

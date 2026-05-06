@@ -8,7 +8,9 @@ import {
   animate as motionAnimate,
   useScroll,
   useSpring,
+  useVelocity,
   type HTMLMotionProps,
+  type MotionValue,
   type Transition,
   type Variants,
 } from "motion/react";
@@ -18,6 +20,7 @@ import {
   useState,
   type ComponentPropsWithoutRef,
   type ReactNode,
+  type RefObject,
 } from "react";
 
 // Editorial easing: expo-out feels like ink settling
@@ -245,6 +248,102 @@ export function useActiveSection(ids: string[]): string {
     return () => window.removeEventListener("scroll", onScroll);
   }, [ids]);
   return active;
+}
+
+/**
+ * Returns a 0..1 progress value that tracks the section's traversal of the
+ * viewport. 0 = section's top hits viewport bottom, 1 = section's bottom
+ * leaves viewport top.
+ */
+export function useSectionProgress(ref: RefObject<HTMLElement | null>) {
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  return scrollYProgress;
+}
+
+/**
+ * Same shape but the section is "pinned" — progress runs while the section's
+ * top is at the viewport top until its bottom reaches the viewport bottom.
+ */
+export function usePinnedProgress(ref: RefObject<HTMLElement | null>) {
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end end"],
+  });
+  return scrollYProgress;
+}
+
+/**
+ * Velocity-driven skew. Returns a smoothed degrees value clamped at ±max.
+ * Apply to skewX or skewY on display headings for a subtle Locomotive feel.
+ */
+export function useScrollSkew(max = 4) {
+  const { scrollY } = useScroll();
+  const v = useVelocity(scrollY);
+  const sv = useSpring(v, { stiffness: 220, damping: 32, mass: 0.6 });
+  return useTransform(sv, (val) => {
+    const clamp = Math.max(-3000, Math.min(3000, val));
+    return (clamp / 3000) * max;
+  });
+}
+
+/**
+ * Word inside a paragraph whose opacity is tied to scroll progress.
+ */
+function ScrollWord({
+  progress,
+  start,
+  end,
+  children,
+}: {
+  progress: MotionValue<number>;
+  start: number;
+  end: number;
+  children: string;
+}) {
+  const opacity = useTransform(progress, [start, end], [0.18, 1], {
+    clamp: true,
+  });
+  return <motion.span style={{ opacity }}>{children}</motion.span>;
+}
+
+/**
+ * Renders a paragraph word-by-word, with each word tied to a slice of the
+ * passed-in scroll progress. The first word lights up at `start`, the last
+ * by `end`. Whitespace is preserved.
+ */
+export function ScrollText({
+  text,
+  progress,
+  start = 0,
+  end = 1,
+}: {
+  text: string;
+  progress: MotionValue<number>;
+  start?: number;
+  end?: number;
+}) {
+  const tokens = text.split(/(\s+)/);
+  const wordCount = tokens.filter((t) => t.trim().length > 0).length;
+  const span = (end - start) / Math.max(1, wordCount);
+  let wIdx = -1;
+  return (
+    <>
+      {tokens.map((tok, i) => {
+        if (!tok.trim()) return <span key={i}>{tok}</span>;
+        wIdx++;
+        const ws = start + wIdx * span;
+        const we = ws + span * 1.6;
+        return (
+          <ScrollWord key={i} progress={progress} start={ws} end={we}>
+            {tok}
+          </ScrollWord>
+        );
+      })}
+    </>
+  );
 }
 
 /**

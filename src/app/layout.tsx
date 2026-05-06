@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import { CustomCursor } from "./sections/_cursor";
+import { SmoothScrollProvider } from "./sections/_smooth-scroll";
 
 const plexSans = IBM_Plex_Sans({
   variable: "--font-plex-sans",
@@ -30,7 +32,11 @@ export default function RootLayout({
       lang="en"
       className={`${plexSans.variable} ${plexMono.variable} antialiased`}
     >
-      <body>{children}</body>
+      <body>
+        <SmoothScrollProvider />
+        <CustomCursor />
+        {children}
+      </body>
     </html>
   );
 }
