@@ -22,6 +22,13 @@ export const metadata: Metadata = {
     "Investor brief · Geometry-native AI for the structured world. Five orders of magnitude faster than the reference solver.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#0C0C0B",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

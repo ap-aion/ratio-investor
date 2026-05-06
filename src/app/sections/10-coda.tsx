@@ -244,28 +244,20 @@ export function Coda() {
             "We are upstream of formation,",
             "not downstream of recruitment.",
           ].map((line, i) => (
-            <span
+            <motion.span
               key={line}
-              style={{
-                display: "block",
-                overflow: "hidden",
-                paddingBottom: 4,
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.05, margin: "0px 0px -120px 0px" }}
+              transition={{
+                duration: 1.0,
+                ease: EASE,
+                delay: 0.15 + i * 0.16,
               }}
+              style={{ display: "block" }}
             >
-              <motion.span
-                initial={{ y: "110%" }}
-                whileInView={{ y: "0%" }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{
-                  duration: 1.2,
-                  ease: EASE,
-                  delay: 0.4 + i * 0.18,
-                }}
-                style={{ display: "inline-block", willChange: "transform" }}
-              >
-                {line}
-              </motion.span>
-            </span>
+              {line}
+            </motion.span>
           ))}
         </h2>
         <div style={{ alignItems: "center", display: "flex", gap: 16 }}>

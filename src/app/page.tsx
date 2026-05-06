@@ -9,30 +9,26 @@ import { Speedup } from "./sections/08-speedup";
 import { Moat } from "./sections/09-moat";
 import { Coda } from "./sections/10-coda";
 import { KeywordMarquee } from "./sections/_marquee";
+import { ResponsiveShell } from "./sections/_responsive-shell";
 
 export default function Home() {
   return (
     <main className="grain pitch-fade" style={{ background: "var(--bg)" }}>
-      <div
-        style={{
-          margin: "0 auto",
-          width: 1440,
-          minWidth: 1440,
-          background: "var(--bg)",
-        }}
-      >
-        <Masthead />
-        <ColdOpen />
-        <KeywordMarquee />
-        <Constellation />
-        <Invariances />
-        <Validation />
-        <Counterpoint />
-        <Conviction />
-        <Speedup />
-        <Moat />
-        <Coda />
-      </div>
+      <ResponsiveShell>
+        <div style={{ background: "var(--bg)", width: 1440 }}>
+          <Masthead />
+          <ColdOpen />
+          <KeywordMarquee />
+          <Constellation />
+          <Invariances />
+          <Validation />
+          <Counterpoint />
+          <Conviction />
+          <Speedup />
+          <Moat />
+          <Coda />
+        </div>
+      </ResponsiveShell>
     </main>
   );
 }
